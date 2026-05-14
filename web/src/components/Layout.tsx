@@ -45,7 +45,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       >
         <div className="p-4 border-b border-border">
           <h1 className="text-xl font-bold">🚀 Pitcher</h1>
-          <p className="text-xs text-muted-foreground mt-1">安全运维平台</p>
+          <p className="text-xs text-muted-foreground mt-1">蜜罐管理平台</p>
         </div>
         <nav className="mt-4">
           {navItems.map((item) => (

@@ -97,7 +97,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               <span>{themeInfo.name}</span>
             </button>
             {themeMenuOpen && (
-              <div className="absolute right-0 top-full mt-1 w-36 bg-popover border border-border rounded-lg shadow-lg py-1 z-50">
+              <div className="absolute right-0 top-full mt-1 w-36 bg-card border border-border rounded-lg shadow-lg py-1 z-50">
                 {THEMES.map((t) => (
                   <button
                     key={t.id}
@@ -128,7 +128,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <span>{themeInfo.name}</span>
               </button>
               {themeMenuOpen && (
-                <div className="absolute right-0 top-full mt-1 w-36 bg-popover border border-border rounded-lg shadow-lg py-1 z-50">
+                <div className="absolute right-0 top-full mt-1 w-36 bg-card border border-border rounded-lg shadow-lg py-1 z-50">
                   {THEMES.map((t) => (
                     <button
                       key={t.id}

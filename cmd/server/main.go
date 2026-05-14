@@ -148,29 +148,60 @@ func buildMgmtRouter(
 	}).Methods("GET")
 
 	api.HandleFunc("/downloads/agents", func(w http.ResponseWriter, r *http.Request) {
-		pattern := "dist/honeywatch-agent-" + Version + "-*"
-		exes, _ := filepath.Glob(pattern)
-		if len(exes) == 0 {
-			exes, _ = filepath.Glob("bin/honeywatch-agent-" + Version + "-*")
-		}
 		type entry struct {
 			Filename string `json:"filename"`
 			OS       string `json:"os"`
 			Arch     string `json:"arch"`
 			Size     int64  `json:"size"`
+			SHA256   string `json:"sha256"`
 		}
+
 		var list []entry
-		for _, f := range exes {
-			info, _ := os.Stat(f)
-			fn := filepath.Base(f)
-			os, arch, _ := parseAgentFilename(fn)
-			list = append(list, entry{
-				Filename: fn,
-				OS:       os,
-				Arch:     arch,
-				Size:     info.Size(),
-			})
+
+		data, err := os.ReadFile("releases/manifest.json")
+		if err == nil {
+			var m struct {
+				Files []struct {
+				Filename string `json:"filename"`
+				OS      string `json:"os"`
+				Arch    string `json:"arch"`
+				Size    int64  `json:"size"`
+				SHA256  string `json:"sha256"`
+			} `json:"files"`
+			}
+			if json.Unmarshal(data, &m) == nil {
+				for _, f := range m.Files {
+					list = append(list, entry{
+						Filename: f.Filename,
+						OS:       f.OS,
+						Arch:     f.Arch,
+						Size:     f.Size,
+						SHA256:   f.SHA256,
+					})
+				}
+			}
 		}
+
+		if len(list) == 0 {
+			pattern := "dist/honeywatch-agent-" + Version + "-*"
+			exes, _ := filepath.Glob(pattern)
+			if len(exes) == 0 {
+				exes, _ = filepath.Glob("bin/honeywatch-agent-" + Version + "-*")
+			}
+			for _, f := range exes {
+				info, _ := os.Stat(f)
+				fn := filepath.Base(f)
+				os, arch, _ := parseAgentFilename(fn)
+				list = append(list, entry{
+					Filename: fn,
+					OS:       os,
+					Arch:     arch,
+					Size:     info.Size(),
+					SHA256:   "",
+				})
+			}
+		}
+
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"version": Version,

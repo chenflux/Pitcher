@@ -8,6 +8,7 @@ interface AgentDownload {
   os: string;
   arch: string;
   size: number;
+  sha256: string;
 }
 
 function formatBytes(bytes: number): string {
@@ -200,7 +201,7 @@ export default function Settings() {
               <span>文件</span>
               <span className="w-20 text-right">大小</span>
               <span className="w-28 text-center">操作</span>
-              <span className="w-20 text-center">SHA256</span>
+              <span className="w-52 text-left">SHA256</span>
             </div>
             {agents.map((a) => {
               const deployCmd = buildDeployCmd(a.filename, agentToken || "YOUR_TOKEN");
@@ -238,7 +239,7 @@ export default function Settings() {
                       复制
                     </button>
                   </div>
-                  <div className="text-xs text-muted-foreground pt-1 w-28 text-center shrink-0 font-mono">-</div>
+                  <div className="text-xs text-muted-foreground pt-1 w-52 text-left shrink-0 font-mono truncate" title={a.sha256}>{a.sha256 || "-"}</div>
                 </div>
               );
             })}

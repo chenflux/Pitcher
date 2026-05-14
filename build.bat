@@ -91,51 +91,52 @@ echo ============================================================
 echo   Generating releases manifest
 echo ============================================================
 
-echo { > releases\manifest.json
-echo   "version": "!VERSION!", >> releases\manifest.json
-echo   "build_date": "%VDATE%", >> releases\manifest.json
-echo   "files": [ >> releases\manifest.json
+set MANIFEST_TMP=releases\manifest.tmp
+echo { > %MANIFEST_TMP%
+echo   "version": "!VERSION!", >> %MANIFEST_TMP%
+echo   "build_date": "%VDATE%", >> %MANIFEST_TMP%
+echo   "files": [ >> %MANIFEST_TMP%
 
 set FIRST=1
 for %%f in (dist\honeywatch-agent-!VERSION!-*) do (
     if not defined FIRST (
-        echo     ,>> releases\manifest.json
+        echo     ,>> %MANIFEST_TMP%
     )
     set FIRST=
 
     set FN=%%~nxf
-    set SIZE=0
-    for %%s in ("%%f") do set SIZE=%%~zs
+
+    for %%s in ("%%f") do set FSIZE=%%~zs
 
     for %%a in (amd64 arm64 386 arm) do (
         echo !FN! | find "-linux-%%a" >nul && (
-            set OS=linux
-            set ARCH=%%a
-            set EXT=
+            set FOS=linux
+            set FARCH=%%a
         )
         echo !FN! | find "-darwin-%%a" >nul && (
-            set OS=darwin
-            set ARCH=%%a
-            set EXT=
+            set FOS=darwin
+            set FARCH=%%a
         )
         echo !FN! | find "-windows-%%a.exe" >nul && (
-            set OS=windows
-            set ARCH=%%a
-            set EXT=.exe
+            set FOS=windows
+            set FARCH=%%a
         )
     )
 
-    echo     { >> releases\manifest.json
-    echo       "filename": "!FN!", >> releases\manifest.json
-    echo       "os": "!OS!", >> releases\manifest.json
-    echo       "arch": "!ARCH!", >> releases\manifest.json
-    echo       "url": "/api/downloads/agent/!FN!", >> releases\manifest.json
-    echo       "size": !SIZE! >> releases\manifest.json
-    echo     } >> releases\manifest.json
+    for /f "delims=" %%h in ('powershell -NoProfile -Command "(Get-FileHash -Path '%%f' -Algorithm SHA256).Hash"') do set SHA256=%%h
+
+    echo     { >> %MANIFEST_TMP%
+    echo       "filename": "!FN!", >> %MANIFEST_TMP%
+    echo       "os": "!FOS!", >> %MANIFEST_TMP%
+    echo       "arch": "!FARCH!", >> %MANIFEST_TMP%
+    echo       "size": !FSIZE!, >> %MANIFEST_TMP%
+    echo       "sha256": "!SHA256!" >> %MANIFEST_TMP%
+    echo     } >> %MANIFEST_TMP%
 )
 
-echo   ] >> releases\manifest.json
-echo } >> releases\manifest.json
+echo   ] >> %MANIFEST_TMP%
+echo } >> %MANIFEST_TMP%
+move /Y %MANIFEST_TMP% releases\manifest.json
 
 echo.
 echo ============================================================

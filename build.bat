@@ -23,7 +23,7 @@ if not exist releases mkdir releases
 
 echo.
 echo [Build Server] windows amd64
-go build -ldflags "-s" -o dist\pitcher-server-!VERSION!-windows-amd64.exe .\cmd\server\
+go build -ldflags "-s -w" -o dist\pitcher-server-!VERSION!-windows-amd64.exe .\cmd\server\
 if errorlevel 1 goto :fail
 
 echo [Build Frontend]
@@ -74,7 +74,7 @@ for %%p in (%AGENT_PLATS%) do (
             pushd agent
             set GOOS=%%p
             set GOARCH=%%a
-            go build -ldflags "-s" -o ..\!OUTFILE! .\cmd\
+            go build -ldflags "-s -w" -o ..\!OUTFILE! .\cmd\
             set BUILD_CODE=!errorlevel!
             popd
             if !BUILD_CODE! neq 0 (

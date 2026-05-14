@@ -1,5 +1,6 @@
 import { type ReactNode, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useTheme, THEMES } from "../context/ThemeContext";
 
 const navItems = [
   { path: "/", label: "仪表盘", icon: "📊" },
@@ -14,6 +15,7 @@ const navItems = [
 export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -29,7 +31,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       >
         <div className="p-4 border-b border-border">
           <h1 className="text-xl font-bold">🐝 HoneyWatch</h1>
-          <p className="text-xs text-muted-foreground mt-1">蜜罐管理系统 v2.0</p>
+          <p className="text-xs text-muted-foreground mt-1">蜜罐管理系统</p>
         </div>
         <nav className="mt-4">
           {navItems.map((item) => (
@@ -66,7 +68,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       )}
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-card shadow-sm px-4 py-3 flex items-center lg:hidden border-b border-border">
+        <header className="bg-card shadow-sm px-4 py-3 flex items-center justify-between lg:hidden border-b border-border">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="text-foreground"
@@ -74,7 +76,32 @@ export default function Layout({ children }: { children: ReactNode }) {
             ☰
           </button>
           <span className="ml-3 font-semibold">🐝 HoneyWatch</span>
+          <select
+            value={theme}
+            onChange={(e) => setTheme(e.target.value as any)}
+            className="bg-muted text-muted-foreground text-xs rounded px-2 py-1 border border-border"
+          >
+            {THEMES.map((t) => (
+              <option key={t.id} value={t.id}>{t.name}</option>
+            ))}
+          </select>
         </header>
+
+        <header className="hidden lg:flex items-center justify-end px-6 py-2 border-b border-border bg-card gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground">主题</span>
+            <select
+              value={theme}
+              onChange={(e) => setTheme(e.target.value as any)}
+              className="bg-muted text-foreground text-xs rounded px-2 py-1 border border-border focus:outline-none focus:ring-1 focus:ring-ring"
+            >
+              {THEMES.map((t) => (
+                <option key={t.id} value={t.id}>{t.name}</option>
+              ))}
+            </select>
+          </div>
+        </header>
+
         <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </div>
     </div>

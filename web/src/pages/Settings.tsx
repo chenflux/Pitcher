@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { authApi, settingsApi } from "../api";
 import { useToast } from "../components/Toast";
-import { useTheme, THEMES, type ThemeName } from "../context/ThemeContext";
 
 interface AgentDownload {
   filename: string;
@@ -49,7 +48,6 @@ export default function Settings() {
   const [agents, setAgents] = useState<AgentDownload[]>([]);
   const [serverVersion, setServerVersion] = useState("");
   const [refreshing, setRefreshing] = useState(false);
-  const { theme, setTheme, themeInfo } = useTheme();
   const { toast } = useToast();
 
   const loadData = useCallback(async () => {
@@ -126,49 +124,51 @@ export default function Settings() {
         <p className="text-sm text-muted-foreground mt-1">管理账户安全、通信密钥与 Agent 部署</p>
       </div>
 
-      <div className="bg-card rounded-xl border border-border p-6 max-w-2xl">
-        <h2 className="text-base font-semibold mb-4 text-foreground">修改密码</h2>
-        {pwdMsg && <div className="bg-emerald-500/10 text-emerald-400 px-4 py-2 rounded-lg text-sm mb-4">{pwdMsg}</div>}
-        {pwdError && <div className="bg-red-500/10 text-red-400 px-4 py-2 rounded-lg text-sm mb-4">{pwdError}</div>}
-        <div className="space-y-3">
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">当前密码</label>
-            <input type="password" value={oldPwd} onChange={(e) => setOldPwd(e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">新密码</label>
-            <input type="password" value={newPwd} onChange={(e) => setNewPwd(e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">确认新密码</label>
-            <input type="password" value={confirmPwd} onChange={(e) => setConfirmPwd(e.target.value)}
-              className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
-          </div>
-          <button onClick={changePassword} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm hover:opacity-90 transition-opacity">
-            修改密码
-          </button>
-        </div>
-      </div>
-
-      <div className="bg-card rounded-xl border border-border p-6 max-w-2xl">
-        <h2 className="text-base font-semibold mb-2 text-foreground">Agent 通信密钥</h2>
-        <p className="text-xs text-muted-foreground mb-4">此 Token 用于 Agent 与 Server 数据面(8090)通信认证，请妥善保管。</p>
-        {tokenLoading ? (
-          <div className="text-sm text-muted-foreground">加载中...</div>
-        ) : (
-          <>
-            <div className="flex gap-2 items-center">
-              <code className="flex-1 bg-muted px-3 py-2 rounded-lg text-sm font-mono break-all text-foreground">{agentToken}</code>
-              <button onClick={() => { navigator.clipboard.writeText(agentToken); toast("success", "已复制"); }}
-                className="px-3 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm hover:opacity-80 shrink-0">复制</button>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="bg-card rounded-xl border border-border p-6">
+          <h2 className="text-base font-semibold mb-4 text-foreground">修改密码</h2>
+          {pwdMsg && <div className="bg-emerald-500/10 text-emerald-400 px-4 py-2 rounded-lg text-sm mb-4">{pwdMsg}</div>}
+          {pwdError && <div className="bg-red-500/10 text-red-400 px-4 py-2 rounded-lg text-sm mb-4">{pwdError}</div>}
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">当前密码</label>
+              <input type="password" value={oldPwd} onChange={(e) => setOldPwd(e.target.value)}
+                className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
             </div>
-            <button onClick={regenerateToken} className="mt-3 px-4 py-2 bg-orange-500/10 text-orange-400 border border-orange-500/30 rounded-lg text-sm hover:bg-orange-500/20 transition-colors">
-              重新生成密钥
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">新密码</label>
+              <input type="password" value={newPwd} onChange={(e) => setNewPwd(e.target.value)}
+                className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">确认新密码</label>
+              <input type="password" value={confirmPwd} onChange={(e) => setConfirmPwd(e.target.value)}
+                className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+            </div>
+            <button onClick={changePassword} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm hover:opacity-90 transition-opacity">
+              修改密码
             </button>
-          </>
-        )}
+          </div>
+        </div>
+
+        <div className="bg-card rounded-xl border border-border p-6">
+          <h2 className="text-base font-semibold mb-2 text-foreground">Agent 通信密钥</h2>
+          <p className="text-xs text-muted-foreground mb-4">此 Token 用于 Agent 与 Server 数据面(8090)通信认证，请妥善保管。</p>
+          {tokenLoading ? (
+            <div className="text-sm text-muted-foreground">加载中...</div>
+          ) : (
+            <>
+              <div className="flex gap-2 items-center">
+                <code className="flex-1 bg-muted px-3 py-2 rounded-lg text-sm font-mono break-all text-foreground">{agentToken}</code>
+                <button onClick={() => { navigator.clipboard.writeText(agentToken); toast("success", "已复制"); }}
+                  className="px-3 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm hover:opacity-80 shrink-0">复制</button>
+              </div>
+              <button onClick={regenerateToken} className="mt-3 px-4 py-2 bg-orange-500/10 text-orange-400 border border-orange-500/30 rounded-lg text-sm hover:bg-orange-500/20 transition-colors">
+                重新生成密钥
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="bg-card rounded-xl border border-border p-6">
@@ -257,30 +257,6 @@ export default function Settings() {
             </table>
           </div>
         )}
-      </div>
-
-      <div className="bg-card rounded-xl border border-border p-6 max-w-2xl">
-        <h2 className="text-base font-semibold mb-2 text-foreground">外观主题</h2>
-        <p className="text-xs text-muted-foreground mb-4">当前：<span className="font-medium text-foreground">{themeInfo.name}</span></p>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {THEMES.map((t) => (
-            <button
-              key={t.id}
-              onClick={() => setTheme(t.id as ThemeName)}
-              className={`p-3 rounded-lg border-2 transition-all text-left ${
-                theme === t.id ? "border-primary" : "border-border hover:border-primary/30"
-              }`}
-              style={{ backgroundColor: t.preview.bg }}
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: t.preview.primary }} />
-                <span className="text-sm font-medium" style={{ color: t.preview.fg }}>{t.name}</span>
-              </div>
-              <div className="text-xs" style={{ color: t.preview.fg, opacity: 0.7 }}>{t.desc}</div>
-              <div className="mt-2 h-3 rounded" style={{ backgroundColor: t.preview.card }} />
-            </button>
-          ))}
-        </div>
       </div>
     </div>
   );

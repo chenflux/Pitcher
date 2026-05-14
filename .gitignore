@@ -43,8 +43,6 @@ releases/
 
 # Go
 vendor/
-go.sum
-agent/go.sum
 
 # Node
 web/dist/

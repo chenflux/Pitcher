@@ -195,54 +195,66 @@ export default function Settings() {
             <p className="text-xs mt-1">请运行 build.bat 编译 Agent 后刷新此页面</p>
           </div>
         ) : (
-          <div className="space-y-2">
-            <div className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-x-4 gap-y-1 px-4 py-2 text-xs font-semibold text-muted-foreground border-b border-border">
-              <span className="w-6"></span>
-              <span>文件</span>
-              <span className="w-20 text-right">大小</span>
-              <span className="w-28 text-center">操作</span>
-              <span className="w-52 text-left">SHA256</span>
-            </div>
-            {agents.map((a) => {
-              const deployCmd = buildDeployCmd(a.filename, agentToken || "YOUR_TOKEN");
-              const downloadUrl = `/api/downloads/agent/${a.filename}`;
-              return (
-                <div key={a.filename} className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-x-4 gap-y-1 items-start px-4 py-3 rounded-lg hover:bg-secondary/50 transition-colors border border-transparent hover:border-border">
-                  <span className="text-xl w-6 pt-0.5">{osIcon[a.os] || "🖥️"}</span>
-                  <div className="min-w-0">
-                    <div className="text-sm font-medium text-foreground">{osLabel[a.os] || a.os} / {a.arch}</div>
-                    <div className="text-xs text-muted-foreground font-mono truncate">{a.filename}</div>
-                    <div className="mt-2 bg-muted rounded-lg px-3 py-2 text-xs font-mono text-muted-foreground whitespace-pre-wrap break-all leading-relaxed">{deployCmd}</div>
-                  </div>
-                  <div className="text-xs text-muted-foreground pt-1 w-20 text-right shrink-0">{formatBytes(a.size)}</div>
-                  <div className="flex gap-1 pt-1 w-28 justify-center shrink-0">
-                    <button
-                      onClick={() => {
-                        const link = document.createElement("a");
-                        link.href = downloadUrl;
-                        link.download = a.filename;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                      }}
-                      className="px-2.5 py-1 bg-primary text-primary-foreground rounded-lg text-xs hover:opacity-90 transition-opacity"
-                    >
-                      下载
-                    </button>
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(deployCmd);
-                        toast("success", "部署命令已复制");
-                      }}
-                      className="px-2.5 py-1 bg-secondary text-secondary-foreground rounded-lg text-xs hover:opacity-80 transition-opacity"
-                    >
-                      复制
-                    </button>
-                  </div>
-                  <div className="text-xs text-muted-foreground pt-1 w-52 text-left shrink-0 font-mono truncate" title={a.sha256}>{a.sha256 || "-"}</div>
-                </div>
-              );
-            })}
+          <div className="border border-border rounded-lg overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-muted/50 border-b border-border">
+                  <th className="text-left px-4 py-2.5 text-xs font-semibold text-muted-foreground w-8"></th>
+                  <th className="text-left px-4 py-2.5 text-xs font-semibold text-muted-foreground">平台</th>
+                  <th className="text-left px-4 py-2.5 text-xs font-semibold text-muted-foreground">文件名</th>
+                  <th className="text-right px-4 py-2.5 text-xs font-semibold text-muted-foreground w-20">大小</th>
+                  <th className="text-left px-4 py-2.5 text-xs font-semibold text-muted-foreground w-48">SHA256</th>
+                  <th className="text-center px-4 py-2.5 text-xs font-semibold text-muted-foreground w-36">操作</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {agents.map((a) => {
+                  const deployCmd = buildDeployCmd(a.filename, agentToken || "YOUR_TOKEN");
+                  const downloadUrl = `/api/downloads/agent/${a.filename}`;
+                  return (
+                    <tr key={a.filename} className="hover:bg-secondary/30 transition-colors">
+                      <td className="px-4 py-3 text-lg text-center">{osIcon[a.os] || "🖥️"}</td>
+                      <td className="px-4 py-3">
+                        <div className="font-medium text-foreground">{osLabel[a.os] || a.os}</div>
+                        <div className="text-xs text-muted-foreground">{a.arch}</div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="font-mono text-xs text-foreground truncate max-w-xs">{a.filename}</div>
+                        <div className="mt-1.5 bg-muted rounded px-2 py-1.5 text-xs font-mono text-muted-foreground whitespace-pre-wrap break-all leading-relaxed">{deployCmd}</div>
+                      </td>
+                      <td className="px-4 py-3 text-right text-muted-foreground text-xs whitespace-nowrap">{formatBytes(a.size)}</td>
+                      <td className="px-4 py-3 font-mono text-xs text-muted-foreground truncate max-w-[12rem]" title={a.sha256}>{a.sha256 || "-"}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex gap-1.5 justify-center">
+                          <button
+                            onClick={() => {
+                              const link = document.createElement("a");
+                              link.href = downloadUrl;
+                              link.download = a.filename;
+                              document.body.appendChild(link);
+                              link.click();
+                              document.body.removeChild(link);
+                            }}
+                            className="px-3 py-1.5 bg-primary text-primary-foreground rounded-lg text-xs hover:opacity-90 transition-opacity whitespace-nowrap"
+                          >
+                            下载
+                          </button>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(deployCmd);
+                              toast("success", "部署命令已复制");
+                            }}
+                            className="px-3 py-1.5 bg-secondary text-secondary-foreground rounded-lg text-xs hover:opacity-80 transition-opacity whitespace-nowrap"
+                          >
+                            复制命令
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         )}
       </div>

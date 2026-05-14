@@ -3,75 +3,75 @@
   "build_date": "20260514", 
   "files": [ 
     { 
-      "filename": "honeywatch-agent-0.2.1-darwin-amd64", 
+      "filename": "pitcher-agent-0.2.1-darwin-amd64", 
       "os": "darwin", 
       "arch": "amd64", 
       "size": 6129008, 
-      "sha256": "F7830CEE510D4955C1D0093DE7D75DCB834CF4DF9E623BCA9B70237993AD5A08" 
+      "sha256": "2FAC19B15334D0EDAFC4AD628929049951C88AF5C97CAB88C83611B5C92C610A" 
     } 
     ,
     { 
-      "filename": "honeywatch-agent-0.2.1-darwin-arm64", 
+      "filename": "pitcher-agent-0.2.1-darwin-arm64", 
       "os": "darwin", 
       "arch": "arm", 
       "size": 5896210, 
-      "sha256": "BCD2E54E91137A20025E7E1CC8A7768EE736E7149D9B0544DF6352A044F4AE8B" 
+      "sha256": "4E9FC4E0AE1DEE90B66CB717A9B3DC7A426EE526CDC2A3DF1672BF3BBDF7BB5A" 
     } 
     ,
     { 
-      "filename": "honeywatch-agent-0.2.1-linux-386", 
+      "filename": "pitcher-agent-0.2.1-linux-386", 
       "os": "linux", 
       "arch": "386", 
       "size": 5701784, 
-      "sha256": "FBA9F8BF986953A47F3FC7F910DEE217131B981790D32E6E3C09EF3CB8AB91CD" 
+      "sha256": "078F7942F33ED329FCD2D7E66EAFCC97C802E9D67CDA3D3A51C6536305B5042B" 
     } 
     ,
     { 
-      "filename": "honeywatch-agent-0.2.1-linux-amd64", 
+      "filename": "pitcher-agent-0.2.1-linux-amd64", 
       "os": "linux", 
       "arch": "amd64", 
       "size": 5935256, 
-      "sha256": "6BDA39E7C3F7AB29C96CE1C9A1CD34E211A830798B567F43B5EDC91F4BF7B229" 
+      "sha256": "30ACADC13F3F4E4748036C65CA7374AC21C1269F238829716430510F5EACF5CB" 
     } 
     ,
     { 
-      "filename": "honeywatch-agent-0.2.1-linux-arm", 
+      "filename": "pitcher-agent-0.2.1-linux-arm", 
       "os": "linux", 
       "arch": "arm", 
       "size": 5767320, 
-      "sha256": "082270A69BC7DB9BA18233087F0F880ED94CA2F023CBD41B29D5986AD4B59711" 
+      "sha256": "480C1F5C28744254485EDA78357E8AC0B6E9699800E13AD5709A26A1ED4FE539" 
     } 
     ,
     { 
-      "filename": "honeywatch-agent-0.2.1-linux-arm64", 
+      "filename": "pitcher-agent-0.2.1-linux-arm64", 
       "os": "linux", 
       "arch": "arm", 
       "size": 5701784, 
-      "sha256": "91E7537039B7A2C1CB89D40B9456D85D094AA193E49B687073A965AFBE8C30D4" 
+      "sha256": "D8BE316E17ADEAC1D766C90F1AE0A327BA71EBE160306EBE80FA2504C454180F" 
     } 
     ,
     { 
-      "filename": "honeywatch-agent-0.2.1-windows-386.exe", 
+      "filename": "pitcher-agent-0.2.1-windows-386.exe", 
       "os": "windows", 
       "arch": "386", 
       "size": 5881344, 
-      "sha256": "D0FB9D47AD2E1A65B60B8B850A96072BC33C0EE75E256C36020507E127CF9D0E" 
+      "sha256": "D9D6FDAA98341A28896D6B8313449621CEC8DBAE2C3FC69F260EF2D7F22D0595" 
     } 
     ,
     { 
-      "filename": "honeywatch-agent-0.2.1-windows-amd64.exe", 
+      "filename": "pitcher-agent-0.2.1-windows-amd64.exe", 
       "os": "windows", 
       "arch": "amd64", 
-      "size": 6164992, 
-      "sha256": "EA6FE3BC0F502FCBA59CC83B4B100B489F7D1D361B3042AA053A7E578B26E218" 
+      "size": 6164480, 
+      "sha256": "779A0C33176CB040A6DA4E473F0493D30E9F67D9D71166D6142EE36E06E1C884" 
     } 
     ,
     { 
-      "filename": "honeywatch-agent-0.2.1-windows-arm64.exe", 
+      "filename": "pitcher-agent-0.2.1-windows-arm64.exe", 
       "os": "windows", 
       "arch": "arm64", 
       "size": 5794816, 
-      "sha256": "C4757603F36F55B995614432650CC0396460D284308F85D4FCF84A465352A099" 
+      "sha256": "AC75C2FF925CF6F63A7405AE26E2BA16507ACC7E1D969FAA32A482F02956856C" 
     } 
   ] 
 } 

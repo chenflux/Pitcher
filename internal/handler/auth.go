@@ -4,15 +4,19 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/chenflux/honeywatch/internal/service"
+	"github.com/chenflux/pitcher/internal/service"
 )
 
 type AuthHandler struct {
-	authService *service.AuthService
+	authService     *service.AuthService
+	securityService *service.SecurityService
 }
 
 func NewAuthHandler() *AuthHandler {
-	return &AuthHandler{authService: service.NewAuthService()}
+	return &AuthHandler{
+		authService:     service.NewAuthService(),
+		securityService: service.NewSecurityService(),
+	}
 }
 
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
@@ -26,15 +30,72 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	clientIP := h.securityService.GetClientIP(r)
+
+	if listType, _, ttl := h.securityService.CheckIPList(clientIP); listType != "" {
+		if listType == "blacklist" {
+			writeError(w, http.StatusForbidden, "access denied")
+			return
+		}
+		if listType == "graylist" {
+			writeJSON(w, http.StatusTooManyRequests, map[string]interface{}{
+				"success":      false,
+				"error":        "too many requests",
+				"graylist_ttl": ttl,
+			})
+			return
+		}
+	}
+
 	resp, err := h.authService.Login(req)
 	if err != nil {
-		writeError(w, http.StatusUnauthorized, err.Error())
+		captchaRequired, remainingAttempts, lockedUntil, graylistTTL := h.securityService.RecordLoginAttempt(clientIP, false)
+
+		result := map[string]interface{}{
+			"success":           false,
+			"error":             err.Error(),
+			"captcha_required":  captchaRequired,
+			"remaining_attempts": remainingAttempts,
+		}
+
+		if lockedUntil > 0 {
+			result["locked_until"] = lockedUntil
+		}
+		if graylistTTL > 0 {
+			result["graylist_ttl"] = graylistTTL
+		}
+
+		if lockedUntil > 0 || remainingAttempts <= 0 {
+			writeJSON(w, http.StatusTooManyRequests, result)
+			return
+		}
+
+		writeJSON(w, http.StatusUnauthorized, result)
 		return
 	}
+
+	h.securityService.RecordLoginAttempt(clientIP, true)
+
 	writeJSON(w, http.StatusOK, map[string]interface{}{
 		"success": true,
 		"token":   resp.Token,
 		"user":    resp.UserInfo,
+	})
+}
+
+func (h *AuthHandler) GetCaptcha(w http.ResponseWriter, r *http.Request) {
+	clientIP := h.securityService.GetClientIP(r)
+
+	captcha, err := h.securityService.GenerateCaptcha(clientIP)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "failed to generate captcha")
+		return
+	}
+
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"success": true,
+		"id":      captcha.ID,
+		"code":    captcha.Code,
 	})
 }
 

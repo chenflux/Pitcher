@@ -8,6 +8,7 @@ const navItems = [
   { path: "/services", label: "服务管理", icon: "🔧" },
   { path: "/logs", label: "日志查看", icon: "📋" },
   { path: "/rules", label: "规则中心", icon: "🛡️" },
+  { path: "/security", label: "安全管理", icon: "🔒" },
   { path: "/configs", label: "配置管理", icon: "📝" },
   { path: "/settings", label: "系统设置", icon: "⚙️" },
 ];
@@ -43,8 +44,8 @@ export default function Layout({ children }: { children: ReactNode }) {
         }`}
       >
         <div className="p-4 border-b border-border">
-          <h1 className="text-xl font-bold">🐝 HoneyWatch</h1>
-          <p className="text-xs text-muted-foreground mt-1">蜜罐管理系统</p>
+          <h1 className="text-xl font-bold">🚀 Pitcher</h1>
+          <p className="text-xs text-muted-foreground mt-1">安全运维平台</p>
         </div>
         <nav className="mt-4">
           {navItems.map((item) => (
@@ -88,7 +89,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           >
             ☰
           </button>
-          <span className="ml-3 font-semibold">🐝 HoneyWatch</span>
+          <span className="ml-3 font-semibold">🚀 Pitcher</span>
           <div className="relative" ref={themeMenuRef}>
             <button
               onClick={() => setThemeMenuOpen(!themeMenuOpen)}

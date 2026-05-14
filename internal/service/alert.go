@@ -16,8 +16,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/chenflux/honeywatch/internal/database"
-	models "github.com/chenflux/honeywatch/internal/models"
+	"github.com/chenflux/pitcher/internal/database"
+	models "github.com/chenflux/pitcher/internal/models"
 )
 
 type AlertService struct {
@@ -179,7 +179,7 @@ func (s *AlertService) sendEmail(ch *AlertChannelImpl, event AlertEvent) {
 	auth := smtp.PlainAuth("", username, password, smtpHost)
 	toAddrs := strings.Split(to, ",")
 
-	msg := fmt.Sprintf("From: %s\r\nTo: %s\r\nSubject: HoneyWatch Alert\r\n\r\n%s\r\n",
+	msg := fmt.Sprintf("From: %s\r\nTo: %s\r\nSubject: Pitcher Alert\r\n\r\n%s\r\n",
 		from, to, event.Message)
 
 	addr := fmt.Sprintf("%s:%s", smtpHost, smtpPort)
@@ -291,8 +291,8 @@ func (s *AlertService) sendDingTalk(ch *AlertChannelImpl, event AlertEvent) {
 		msg = map[string]interface{}{
 			"msgtype": "markdown",
 			"markdown": map[string]string{
-				"title": "HoneyWatch Alert",
-				"text":  fmt.Sprintf("### HoneyWatch Alert\n\n%s\n\n**Data:**\n```json\n%s\n```",
+				"title": "Pitcher Alert",
+				"text":  fmt.Sprintf("### Pitcher Alert\n\n%s\n\n**Data:**\n```json\n%s\n```",
 					event.Message, s.json(event.Data)),
 			},
 		}
@@ -300,7 +300,7 @@ func (s *AlertService) sendDingTalk(ch *AlertChannelImpl, event AlertEvent) {
 		msg = map[string]interface{}{
 			"msgtype": "text",
 			"text": map[string]string{
-				"content": fmt.Sprintf("HoneyWatch Alert: %s", event.Message),
+				"content": fmt.Sprintf("Pitcher Alert: %s", event.Message),
 			},
 		}
 	}

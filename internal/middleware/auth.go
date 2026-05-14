@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/chenflux/honeywatch/internal/config"
+	"github.com/chenflux/pitcher/internal/config"
 	"github.com/golang-jwt/jwt/v5"
 )
 

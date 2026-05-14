@@ -1,4 +1,4 @@
-module github.com/chenflux/honeywatch
+module github.com/chenflux/pitcher
 
 go 1.25.0
 

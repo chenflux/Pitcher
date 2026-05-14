@@ -1,4 +1,4 @@
-# HoneyWatch
+# Pitcher
 
 蜜罐管理系统，支持实时攻击监控与多平台 Agent。
 
@@ -21,7 +21,7 @@
 ### 运行服务
 
 ```bash
-dist\honeywatch-server-0.2.1-windows-amd64.exe
+dist\pitcher-server-0.2.1-windows-amd64.exe
 ```
 
 管理后台：http://localhost:8080 （账号 admin，密码 admin）
@@ -31,17 +31,17 @@ dist\honeywatch-server-0.2.1-windows-amd64.exe
 ### Windows
 
 ```powershell
-Invoke-WebRequest -Uri "http://localhost:8080/api/downloads/agent/honeywatch-agent-0.2.1-windows-amd64.exe" -OutFile "honeywatch-agent.exe"
-set HONEYWATCH_AGENT_TOKEN=<your-token>
-.\honeywatch-agent.exe
+Invoke-WebRequest -Uri "http://localhost:8080/api/downloads/agent/pitcher-agent-0.2.1-windows-amd64.exe" -OutFile "pitcher-agent.exe"
+set PITCHER_AGENT_TOKEN=<your-token>
+.\pitcher-agent.exe
 ```
 
 ### Linux
 
 ```bash
-curl -L "http://localhost:8080/api/downloads/agent/honeywatch-agent-0.2.1-linux-amd64" -o honeywatch-agent
-chmod +x honeywatch-agent
-HONEYWATCH_AGENT_TOKEN=<your-token> ./honeywatch-agent
+curl -L "http://localhost:8080/api/downloads/agent/pitcher-agent-0.2.1-linux-amd64" -o pitcher-agent
+chmod +x pitcher-agent
+PITCHER_AGENT_TOKEN=<your-token> ./pitcher-agent
 ```
 
 ## 配置
@@ -51,7 +51,7 @@ HONEYWATCH_AGENT_TOKEN=<your-token> ./honeywatch-agent
 ```json
 {
   "server": { "port": 8080, "data_port": 8090 },
-  "database": { "type": "sqlite", "path": "data/honeywatch.db" },
+  "database": { "type": "sqlite", "path": "data/pitcher.db" },
   "jwt": { "secret": "change-me", "expire_hours": 24 },
   "agent": { "token": "change-me", "heartbeat_interval": 30, "timeout": 60 }
 }

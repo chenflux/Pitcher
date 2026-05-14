@@ -110,7 +110,7 @@ func (s *IPGeoService) lookupOnline(ip string) IPGeoInfo {
 	if err != nil {
 		return s.fallback(ip)
 	}
-	req.Header.Set("User-Agent", "HoneyWatch/1.0")
+	req.Header.Set("User-Agent", "Pitcher/1.0")
 
 	client := &http.Client{Timeout: 5 * time.Second}
 	resp, err := client.Do(req)

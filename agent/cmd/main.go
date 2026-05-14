@@ -18,8 +18,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/chenflux/honeywatch/agent/internal/honeypot"
-	"github.com/chenflux/honeywatch/agent/internal/server"
+	"github.com/chenflux/pitcher/agent/internal/honeypot"
+	"github.com/chenflux/pitcher/agent/internal/server"
 	"github.com/google/uuid"
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/disk"
@@ -94,10 +94,10 @@ const maxLogQueue = 10000
 
 func main() {
 	fmt.Println("============================================================")
-	fmt.Println("  HoneyWatch Agent v2.0")
+	fmt.Println("  Pitcher Agent v2.0")
 	fmt.Println("============================================================")
 
-	agentID := os.Getenv("HONEYWATCH_AGENT_ID")
+	agentID := os.Getenv("PITCHER_AGENT_ID")
 	if agentID == "" {
 		agentID = loadAgentID()
 		if agentID == "" {
@@ -106,19 +106,19 @@ func main() {
 		}
 	}
 
-	cfg = &AgentConfig{
-		ServerURL:    getEnv("HONEYWATCH_SERVER", "http://localhost:8090"),
+cfg = &AgentConfig{
+		ServerURL:    getEnv("PITCHER_SERVER", "http://localhost:8090"),
 		AgentID:      agentID,
-		AgentToken:   os.Getenv("HONEYWATCH_AGENT_TOKEN"),
-		Hostname:     getEnv("HONEYWATCH_HOSTNAME", mustHostname()),
+		AgentToken:   os.Getenv("PITCHER_AGENT_TOKEN"),
+		Hostname:     getEnv("PITCHER_HOSTNAME", mustHostname()),
 		PollInterval: 30,
 	}
 
 	if cfg.AgentToken == "" {
-		log.Fatal("[FATAL] HONEYWATCH_AGENT_TOKEN environment variable is required")
+		log.Fatal("[FATAL] PITCHER_AGENT_TOKEN environment variable is required")
 	}
 
-	if ip := getEnv("HONEYWATCH_IP", ""); ip != "" {
+	if ip := getEnv("PITCHER_IP", ""); ip != "" {
 		cfg.IPAddress = ip
 	} else {
 		cfg.IPAddress = autoDetectIP()

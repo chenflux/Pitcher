@@ -30,11 +30,11 @@ const osLabel: Record<string, string> = {
 
 function buildDeployCmd(filename: string, token: string, serverHost: string = "YOUR_SERVER_IP") {
   const downloadUrl = `/api/downloads/agent/${filename}`;
-  const envVars = `HONEYWATCH_SERVER=http://${serverHost}:8090 HONEYWATCH_AGENT_TOKEN=${token}`;
+  const envVars = `PITCHER_SERVER=http://${serverHost}:8090 PITCHER_AGENT_TOKEN=${token}`;
   if (filename.includes("windows")) {
-    return `curl -sSL ${downloadUrl} -o honeywatch-agent.exe\nset ${envVars}\nhoneywatch-agent.exe`;
+    return `curl -sSL ${downloadUrl} -o pitcher-agent.exe\nset ${envVars}\npitcher-agent.exe`;
   }
-  return `curl -sSL ${downloadUrl} -o honeywatch-agent && chmod +x honeywatch-agent\n${envVars} ./honeywatch-agent`;
+  return `curl -sSL ${downloadUrl} -o pitcher-agent && chmod +x pitcher-agent\n${envVars} ./pitcher-agent`;
 }
 
 export default function Settings() {
@@ -185,7 +185,7 @@ export default function Settings() {
           </button>
         </div>
         <p className="text-xs text-muted-foreground mb-4">
-          下载后设置环境变量 <code className="bg-muted px-1.5 py-0.5 rounded text-foreground">HONEYWATCH_SERVER</code> 和 <code className="bg-muted px-1.5 py-0.5 rounded text-foreground">HONEYWATCH_AGENT_TOKEN</code> 即可运行。
+          下载后设置环境变量 <code className="bg-muted px-1.5 py-0.5 rounded text-foreground">PITCHER_SERVER</code> 和 <code className="bg-muted px-1.5 py-0.5 rounded text-foreground">PITCHER_AGENT_TOKEN</code> 即可运行。
         </p>
 
         {agents.length === 0 ? (

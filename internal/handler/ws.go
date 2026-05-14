@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/chenflux/honeywatch/internal/hub"
-	"github.com/chenflux/honeywatch/internal/middleware"
+	"github.com/chenflux/pitcher/internal/hub"
+	"github.com/chenflux/pitcher/internal/middleware"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 )

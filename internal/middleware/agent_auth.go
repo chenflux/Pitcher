@@ -4,7 +4,7 @@ import (
 	"crypto/subtle"
 	"net/http"
 
-	"github.com/chenflux/honeywatch/internal/config"
+	"github.com/chenflux/pitcher/internal/config"
 )
 
 func AgentAuthMiddleware(next http.Handler) http.Handler {

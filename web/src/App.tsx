@@ -10,6 +10,7 @@ const Nodes = lazy(() => import("./pages/Nodes"));
 const Services = lazy(() => import("./pages/Services"));
 const Logs = lazy(() => import("./pages/Logs"));
 const Rules = lazy(() => import("./pages/Rules"));
+const Security = lazy(() => import("./pages/Security"));
 const Configs = lazy(() => import("./pages/Configs"));
 const Settings = lazy(() => import("./pages/Settings"));
 
@@ -46,6 +47,7 @@ export default function App() {
             <Route path="/services" element={<PrivateRoute><Services /></PrivateRoute>} />
             <Route path="/logs" element={<PrivateRoute><Logs /></PrivateRoute>} />
             <Route path="/rules" element={<PrivateRoute><Rules /></PrivateRoute>} />
+            <Route path="/security" element={<PrivateRoute><Security /></PrivateRoute>} />
             <Route path="/configs" element={<PrivateRoute><Configs /></PrivateRoute>} />
             <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
             <Route path="*" element={<Navigate to="/" />} />

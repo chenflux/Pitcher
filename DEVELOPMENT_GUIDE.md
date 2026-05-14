@@ -1,4 +1,4 @@
-# HoneyWatch v2 - Go 重写开发指南
+# Pitcher v2 - Go 重写开发指南
 
 ## 一、项目概述
 
@@ -53,7 +53,7 @@
 ## 三、目录结构
 
 ```
-HoneyWatch/
+Pitcher/
 ├── _legacy/                    # 旧版Python代码归档
 ├── cmd/
 │   └── server/

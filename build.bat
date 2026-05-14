@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 echo ============================================================
-echo   HoneyWatch Cross-Platform Build Script
+echo   Pitcher Cross-Platform Build Script
 echo ============================================================
 
 if not exist VERSION (
@@ -23,7 +23,7 @@ if not exist releases mkdir releases
 
 echo.
 echo [Build Server] windows amd64
-go build -ldflags "-s" -o dist\honeywatch-server-!VERSION!-windows-amd64.exe .\cmd\server\
+go build -ldflags "-s" -o dist\pitcher-server-!VERSION!-windows-amd64.exe .\cmd\server\
 if errorlevel 1 goto :fail
 
 echo [Build Frontend]
@@ -65,9 +65,9 @@ for %%p in (%AGENT_PLATS%) do (
         if !SKIP_BUILD!==1 (
             echo   [SKIP] %%p/%%a
         ) else (
-            set OUTFILE=dist\honeywatch-agent-!VERSION!-%%p-%%a.exe
-            if %%p==linux set OUTFILE=dist\honeywatch-agent-!VERSION!-linux-%%a
-            if %%p==darwin set OUTFILE=dist\honeywatch-agent-!VERSION!-darwin-%%a
+            set OUTFILE=dist\pitcher-agent-!VERSION!-%%p-%%a.exe
+            if %%p==linux set OUTFILE=dist\pitcher-agent-!VERSION!-linux-%%a
+            if %%p==darwin set OUTFILE=dist\pitcher-agent-!VERSION!-darwin-%%a
 
             echo [Build] %%p/%%a - !OUTFILE!
 
@@ -98,7 +98,7 @@ echo   "build_date": "%VDATE%", >> %MANIFEST_TMP%
 echo   "files": [ >> %MANIFEST_TMP%
 
 set FIRST=1
-for %%f in (dist\honeywatch-agent-!VERSION!-*) do (
+for %%f in (dist\pitcher-agent-!VERSION!-*) do (
     if not defined FIRST (
         echo     ,>> %MANIFEST_TMP%
     )
@@ -142,9 +142,9 @@ echo.
 echo ============================================================
 echo   All builds complete!
 echo ============================================================
-echo Server:     dist\honeywatch-server-!VERSION!-windows-amd64.exe
+echo Server:     dist\pitcher-server-!VERSION!-windows-amd64.exe
 echo Agent binaries:
-dir /b dist\honeywatch-agent-!VERSION!-*
+dir /b dist\pitcher-agent-!VERSION!-*
 echo.
 echo Releases manifest: releases\manifest.json
 goto :end

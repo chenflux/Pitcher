@@ -10,12 +10,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/chenflux/honeywatch/internal/config"
-	"github.com/chenflux/honeywatch/internal/database"
-	"github.com/chenflux/honeywatch/internal/handler"
-	"github.com/chenflux/honeywatch/internal/hub"
-	"github.com/chenflux/honeywatch/internal/middleware"
-	"github.com/chenflux/honeywatch/internal/service"
+	"github.com/chenflux/pitcher/internal/config"
+	"github.com/chenflux/pitcher/internal/database"
+	"github.com/chenflux/pitcher/internal/handler"
+	"github.com/chenflux/pitcher/internal/hub"
+	"github.com/chenflux/pitcher/internal/middleware"
+	"github.com/chenflux/pitcher/internal/service"
 	"github.com/gorilla/mux"
 )
 
@@ -39,7 +39,7 @@ func main() {
 	os.Chdir(rootDir)
 
 	fmt.Println("============================================================")
-	fmt.Println("  HoneyWatch Management Center v2.0")
+	fmt.Println("  Pitcher Management Center v2.0")
 	fmt.Println("============================================================")
 	fmt.Printf("Working directory: %s\n", rootDir)
 
@@ -60,6 +60,7 @@ func main() {
 	_ = hub.GlobalHub
 
 	authHandler := handler.NewAuthHandler()
+	securityHandler := handler.NewSecurityHandler()
 	nodeHandler := handler.NewNodeHandler()
 	serviceHandler := handler.NewServiceHandler()
 	logHandler := handler.NewLogHandler()
@@ -67,7 +68,7 @@ func main() {
 	configHandler := handler.NewConfigHandler()
 	settingsHandler := handler.NewSettingsHandler()
 
-	mgmtRouter := buildMgmtRouter(cfg, authHandler, nodeHandler, serviceHandler,
+	mgmtRouter := buildMgmtRouter(cfg, authHandler, securityHandler, nodeHandler, serviceHandler,
 		logHandler, ruleHandler, configHandler, settingsHandler)
 	dataRouter := buildDataRouter(nodeHandler, logHandler)
 
@@ -103,6 +104,7 @@ func main() {
 func buildMgmtRouter(
 	cfg *config.AppConfig,
 	authHandler *handler.AuthHandler,
+	securityHandler *handler.SecurityHandler,
 	nodeHandler *handler.NodeHandler,
 	serviceHandler *handler.ServiceHandler,
 	logHandler *handler.LogHandler,
@@ -123,6 +125,7 @@ func buildMgmtRouter(
 
 	loginLimiter := middleware.RateLimitMiddleware(10, time.Minute)
 	api.Handle("/auth/login", loginLimiter(http.HandlerFunc(authHandler.Login))).Methods("POST")
+	api.Handle("/auth/captcha", http.HandlerFunc(authHandler.GetCaptcha)).Methods("GET")
 
 	protected := api.PathPrefix("").Subrouter()
 	protected.Use(middleware.AuthMiddleware)
@@ -183,10 +186,10 @@ func buildMgmtRouter(
 		}
 
 		if len(list) == 0 {
-			pattern := "dist/honeywatch-agent-" + Version + "-*"
+			pattern := "dist/pitcher-agent-" + Version + "-*"
 			exes, _ := filepath.Glob(pattern)
 			if len(exes) == 0 {
-				exes, _ = filepath.Glob("bin/honeywatch-agent-" + Version + "-*")
+				exes, _ = filepath.Glob("bin/pitcher-agent-" + Version + "-*")
 			}
 			for _, f := range exes {
 				info, _ := os.Stat(f)
@@ -251,6 +254,11 @@ func buildMgmtRouter(
 	admin.HandleFunc("/configs/{id}", configHandler.Update).Methods("PUT")
 	admin.HandleFunc("/configs/{id}", configHandler.Delete).Methods("DELETE")
 	protected.HandleFunc("/configs/{id}/push", configHandler.Push).Methods("POST")
+
+	admin.HandleFunc("/security/entries", securityHandler.ListEntries).Methods("GET")
+	admin.HandleFunc("/security/entries", securityHandler.AddEntry).Methods("POST")
+	admin.HandleFunc("/security/entries", securityHandler.RemoveEntry).Methods("DELETE")
+	admin.HandleFunc("/security/stats", securityHandler.GetStats).Methods("GET")
 
 	r.PathPrefix("/").Handler(spaHandler{staticDir: "web/dist"})
 
@@ -359,16 +367,16 @@ func parseAgentFilename(fn string) (os string, arch string, ext string) {
 	arch = "unknown"
 	if strings.Contains(fn, "-windows-") {
 		os = "windows"
-		arch = strings.TrimPrefix(fn, "honeywatch-agent-"+Version+"-windows-")
+		arch = strings.TrimPrefix(fn, "pitcher-agent-"+Version+"-windows-")
 		arch = strings.TrimSuffix(arch, ".exe")
 		ext = ".exe"
 	} else if strings.Contains(fn, "-linux-") {
 		os = "linux"
-		arch = strings.TrimPrefix(fn, "honeywatch-agent-"+Version+"-linux-")
+		arch = strings.TrimPrefix(fn, "pitcher-agent-"+Version+"-linux-")
 		ext = ""
 	} else if strings.Contains(fn, "-darwin-") {
 		os = "darwin"
-		arch = strings.TrimPrefix(fn, "honeywatch-agent-"+Version+"-darwin-")
+		arch = strings.TrimPrefix(fn, "pitcher-agent-"+Version+"-darwin-")
 		ext = ""
 	}
 	return

@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/chenflux/honeywatch/internal/database"
-	internal_models "github.com/chenflux/honeywatch/internal/models"
+	"github.com/chenflux/pitcher/internal/database"
+	internal_models "github.com/chenflux/pitcher/internal/models"
 	"gorm.io/gorm"
 )
 

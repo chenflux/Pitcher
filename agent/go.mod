@@ -1,4 +1,4 @@
-module github.com/chenflux/honeywatch/agent
+module github.com/chenflux/pitcher/agent
 
 go 1.22
 

@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/chenflux/honeywatch/internal/hub"
-	"github.com/chenflux/honeywatch/internal/service"
+	"github.com/chenflux/pitcher/internal/hub"
+	"github.com/chenflux/pitcher/internal/service"
 )
 
 type LogHandler struct {

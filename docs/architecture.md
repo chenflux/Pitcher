@@ -2,7 +2,7 @@
 
 ## 整体架构
 
-HoneyWatch 采用双平面架构：
+Pitcher 采用双平面架构：
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -209,7 +209,7 @@ Agent 启动 → 读取 agent.id（本地存储）
 
 ```bash
 # Linux 一键部署
-curl -L "http://server:8080/api/downloads/agent/honeywatch-agent-VERSION-linux-amd64" -o /usr/local/bin/honeywatch-agent
-chmod +x /usr/local/bin/honeywatch-agent
-nohup HONEYWATCH_AGENT_TOKEN=your-token /usr/local/bin/honeywatch-agent &
+curl -L "http://server:8080/api/downloads/agent/pitcher-agent-VERSION-linux-amd64" -o /usr/local/bin/pitcher-agent
+chmod +x /usr/local/bin/pitcher-agent
+nohup PITCHER_AGENT_TOKEN=your-token /usr/local/bin/pitcher-agent &
 ```

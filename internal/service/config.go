@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/chenflux/honeywatch/internal/database"
-	models "github.com/chenflux/honeywatch/internal/models"
+	"github.com/chenflux/pitcher/internal/database"
+	models "github.com/chenflux/pitcher/internal/models"
 )
 
 type ConfigService struct{}

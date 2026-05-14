@@ -25,8 +25,9 @@ api.interceptors.response.use(
 export default api;
 
 export const authApi = {
-  login: (username: string, password: string) =>
-    api.post("/auth/login", { username, password }),
+  getCaptcha: () => api.get("/auth/captcha"),
+  login: (username: string, password: string, captcha?: string, captchaId?: string) =>
+    api.post("/auth/login", { username, password, captcha, captcha_id: captchaId }),
   getProfile: () => api.get("/auth/profile"),
   changePassword: (old_password: string, new_password: string) =>
     api.put("/auth/password", { old_password, new_password }),

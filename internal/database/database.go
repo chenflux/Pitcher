@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/chenflux/honeywatch/internal/config"
-	models "github.com/chenflux/honeywatch/internal/models"
+	"github.com/chenflux/pitcher/internal/config"
+	models "github.com/chenflux/pitcher/internal/models"
 	"golang.org/x/crypto/bcrypt"
 	"github.com/glebarez/sqlite"
 	"gorm.io/driver/postgres"
@@ -39,7 +39,7 @@ func Init(cfg *config.AppConfig) error {
 	default:
 		dbPath := cfg.Database.Path
 		if dbPath == "" {
-			dbPath = "data/honeywatch.db"
+			dbPath = "data/pitcher.db"
 		}
 		dialector = sqlite.Open(dbPath)
 	}
@@ -61,6 +61,8 @@ func Init(cfg *config.AppConfig) error {
 		&models.ConfigTemplate{},
 		&models.AlertChannel{},
 		&models.AlertRule{},
+		&models.SecurityEntry{},
+		&models.CaptchaChallenge{},
 	); err != nil {
 		return fmt.Errorf("auto migrate: %w", err)
 	}

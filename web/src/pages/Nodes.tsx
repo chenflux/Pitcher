@@ -77,7 +77,7 @@ export default function Nodes() {
         <div className="bg-card rounded-xl shadow-sm p-16 text-center">
           <p className="text-5xl mb-4">📡</p>
           <h3 className="text-lg font-medium text-foreground">暂无注册节点</h3>
-          <p className="text-muted-foreground mt-2">请部署 HoneyWatch Agent 以注册节点</p>
+          <p className="text-muted-foreground mt-2">请部署 Pitcher Agent 以注册节点</p>
         </div>
       ) : (
         <div className="bg-card rounded-xl shadow-sm overflow-hidden">

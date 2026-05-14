@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/chenflux/honeywatch/internal/service"
+	"github.com/chenflux/pitcher/internal/service"
 	"github.com/gorilla/mux"
 )
 

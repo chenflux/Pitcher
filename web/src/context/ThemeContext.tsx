@@ -45,7 +45,7 @@ export const THEMES: ThemeInfo[] = [
   },
 ];
 
-const STORAGE_KEY = "honeywatch-theme";
+const STORAGE_KEY = "pitcher-theme";
 
 interface ThemeContextValue {
   theme: ThemeName;

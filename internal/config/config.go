@@ -57,16 +57,16 @@ func Load(configPath string) (*AppConfig, error) {
 			},
 			Database: DatabaseConfig{
 				Type: "sqlite",
-				Path: "data/honeywatch.db",
+				Path: "data/pitcher.db",
 			},
 			JWT: JWTConfig{
-				Secret:      "honeywatch-secret-change-me",
+				Secret:      "pitcher-secret-change-me",
 				ExpireHours: 24,
 			},
 			Agent: AgentConfig{
 				HeartbeatInterval: 30,
 				Timeout:           60,
-				Token:             "honeywatch-agent-token-change-me",
+				Token:             "pitcher-agent-token-change-me",
 			},
 		}
 
@@ -87,13 +87,13 @@ func Load(configPath string) (*AppConfig, error) {
 			}
 		}
 
-		if envSecret := os.Getenv("HONEYWATCH_JWT_SECRET"); envSecret != "" {
+		if envSecret := os.Getenv("PITCHER_JWT_SECRET"); envSecret != "" {
 			cfg.JWT.Secret = envSecret
 		}
-		if envDBType := os.Getenv("HONEYWATCH_DB_TYPE"); envDBType != "" {
+		if envDBType := os.Getenv("PITCHER_DB_TYPE"); envDBType != "" {
 			cfg.Database.Type = envDBType
 		}
-		if envDBDsn := os.Getenv("HONEYWATCH_DB_DSN"); envDBDsn != "" {
+		if envDBDsn := os.Getenv("PITCHER_DB_DSN"); envDBDsn != "" {
 			cfg.Database.Dsn = envDBDsn
 		}
 

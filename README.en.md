@@ -1,36 +1,68 @@
-# HoneyWatch
+# Pitcher
 
-#### Description
-{**When you're done, you can delete the content in this README and update the file with details for others getting started with your repository**}
+Honeypot management system with real-time attack monitoring and multi-platform Agent support.
 
-#### Software Architecture
-Software architecture description
+## Features
 
-#### Installation
+- Real-time attack monitoring (WebSocket)
+- Cross-platform Agent (Windows / Linux / macOS)
+- IP geolocation enrichment
+- Alert notifications (Email / Webhook / DingTalk)
+- Dark theme UI with 8 color schemes
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+## Quick Start
 
-#### Instructions
+### Build
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+```bash
+.\build.bat
+```
 
-#### Contribution
+### Run Server
 
-1.  Fork the repository
-2.  Create Feat_xxx branch
-3.  Commit your code
-4.  Create Pull Request
+```bash
+dist\pitcher-server-0.2.1-windows-amd64.exe
+```
 
+Management UI: http://localhost:8080 (admin / admin)
 
-#### Gitee Feature
+## Deploy Agent
 
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+### Windows
+
+```powershell
+Invoke-WebRequest -Uri "http://localhost:8080/api/downloads/agent/pitcher-agent-0.2.1-windows-amd64.exe" -OutFile "pitcher-agent.exe"
+set PITCHER_AGENT_TOKEN=<your-token>
+.\pitcher-agent.exe
+```
+
+### Linux
+
+```bash
+curl -L "http://localhost:8080/api/downloads/agent/pitcher-agent-0.2.1-linux-amd64" -o pitcher-agent
+chmod +x pitcher-agent
+PITCHER_AGENT_TOKEN=<your-token> ./pitcher-agent
+```
+
+## Configuration
+
+Edit `data/config.json`:
+
+```json
+{
+  "server": { "port": 8080, "data_port": 8090 },
+  "database": { "type": "sqlite", "path": "data/pitcher.db" },
+  "jwt": { "secret": "change-me", "expire_hours": 24 },
+  "agent": { "token": "change-me", "heartbeat_interval": 30, "timeout": 60 }
+}
+```
+
+## Tech Stack
+
+- **Backend**: Go, gorilla/mux, GORM
+- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS
+- **Database**: SQLite (default), PostgreSQL
+
+## License
+
+MIT

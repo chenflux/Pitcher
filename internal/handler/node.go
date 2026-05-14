@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/chenflux/honeywatch/internal/service"
+	"github.com/chenflux/pitcher/internal/service"
 	"github.com/gorilla/mux"
 )
 

@@ -5,8 +5,8 @@ bin/
 *.dll
 *.so
 *.dylib
-honeywatch-server-*
-honeywatch-agent-*
+pitcher-server-*
+pitcher-agent-*
 
 # Built assets
 web/dist/

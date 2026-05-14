@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"net/http"
 
-	"github.com/chenflux/honeywatch/internal/config"
+	"github.com/chenflux/pitcher/internal/config"
 )
 
 type SettingsHandler struct{}

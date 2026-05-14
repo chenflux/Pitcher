@@ -22,12 +22,19 @@ const osIcon: Record<string, string> = {
   darwin: "🍎",
 };
 
-function getDeployCmd(filename: string, osName: string) {
+const osLabel: Record<string, string> = {
+  windows: "Windows",
+  linux: "Linux",
+  darwin: "macOS",
+};
+
+function buildDeployCmd(filename: string, token: string, serverHost: string = "YOUR_SERVER_IP") {
   const downloadUrl = `/api/downloads/agent/${filename}`;
-  if (osName === "windows") {
-    return `curl -sSL ${downloadUrl} -o honeywatch-agent.exe\nset HONEYWATCH_SERVER=http://YOUR_SERVER_IP:8090\nset HONEYWATCH_AGENT_TOKEN=YOUR_TOKEN\nhoneywatch-agent.exe`;
+  const envVars = `HONEYWATCH_SERVER=http://${serverHost}:8090 HONEYWATCH_AGENT_TOKEN=${token}`;
+  if (filename.includes("windows")) {
+    return `curl -sSL ${downloadUrl} -o honeywatch-agent.exe\nset ${envVars}\nhoneywatch-agent.exe`;
   }
-  return `curl -sSL ${downloadUrl} -o honeywatch-agent && chmod +x honeywatch-agent && HONEYWATCH_SERVER=http://YOUR_SERVER_IP:8090 HONEYWATCH_AGENT_TOKEN=YOUR_TOKEN ./honeywatch-agent`;
+  return `curl -sSL ${downloadUrl} -o honeywatch-agent && chmod +x honeywatch-agent\n${envVars} ./honeywatch-agent`;
 }
 
 export default function Settings() {
@@ -187,42 +194,54 @@ export default function Settings() {
             <p className="text-xs mt-1">请运行 build.bat 编译 Agent 后刷新此页面</p>
           </div>
         ) : (
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {agents.map((a) => (
-              <div key={a.filename} className="border border-border rounded-lg p-4 hover:border-primary/30 transition-colors">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-2xl">{osIcon[a.os] || "🖥️"}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-foreground truncate">{a.os} / {a.arch}</div>
-                    <div className="text-xs text-muted-foreground">{formatBytes(a.size)}</div>
+          <div className="space-y-2">
+            <div className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-x-4 gap-y-1 px-4 py-2 text-xs font-semibold text-muted-foreground border-b border-border">
+              <span className="w-6"></span>
+              <span>文件</span>
+              <span className="w-20 text-right">大小</span>
+              <span className="w-28 text-center">操作</span>
+              <span className="w-20 text-center">SHA256</span>
+            </div>
+            {agents.map((a) => {
+              const deployCmd = buildDeployCmd(a.filename, agentToken || "YOUR_TOKEN");
+              const downloadUrl = `/api/downloads/agent/${a.filename}`;
+              return (
+                <div key={a.filename} className="grid grid-cols-[auto_1fr_auto_auto_auto] gap-x-4 gap-y-1 items-start px-4 py-3 rounded-lg hover:bg-secondary/50 transition-colors border border-transparent hover:border-border">
+                  <span className="text-xl w-6 pt-0.5">{osIcon[a.os] || "🖥️"}</span>
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-foreground">{osLabel[a.os] || a.os} / {a.arch}</div>
+                    <div className="text-xs text-muted-foreground font-mono truncate">{a.filename}</div>
+                    <div className="mt-2 bg-muted rounded-lg px-3 py-2 text-xs font-mono text-muted-foreground whitespace-pre-wrap break-all leading-relaxed">{deployCmd}</div>
                   </div>
+                  <div className="text-xs text-muted-foreground pt-1 w-20 text-right shrink-0">{formatBytes(a.size)}</div>
+                  <div className="flex gap-1 pt-1 w-28 justify-center shrink-0">
+                    <button
+                      onClick={() => {
+                        const link = document.createElement("a");
+                        link.href = downloadUrl;
+                        link.download = a.filename;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      }}
+                      className="px-2.5 py-1 bg-primary text-primary-foreground rounded-lg text-xs hover:opacity-90 transition-opacity"
+                    >
+                      下载
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(deployCmd);
+                        toast("success", "部署命令已复制");
+                      }}
+                      className="px-2.5 py-1 bg-secondary text-secondary-foreground rounded-lg text-xs hover:opacity-80 transition-opacity"
+                    >
+                      复制
+                    </button>
+                  </div>
+                  <div className="text-xs text-muted-foreground pt-1 w-28 text-center shrink-0 font-mono">-</div>
                 </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {
-                      const link = document.createElement("a");
-                      link.href = `/api/downloads/agent/${a.filename}`;
-                      link.download = a.filename;
-                      document.body.appendChild(link);
-                      link.click();
-                      document.body.removeChild(link);
-                    }}
-                    className="flex-1 px-3 py-1.5 bg-primary text-primary-foreground rounded-lg text-xs hover:opacity-90 transition-opacity text-center"
-                  >
-                    下载
-                  </button>
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(getDeployCmd(a.filename, a.os));
-                      toast("success", "部署命令已复制");
-                    }}
-                    className="flex-1 px-3 py-1.5 bg-secondary text-secondary-foreground rounded-lg text-xs hover:opacity-80 transition-opacity text-center"
-                  >
-                    复制部署命令
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

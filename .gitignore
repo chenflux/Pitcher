@@ -1,0 +1,58 @@
+# Binaries
+dist/
+bin/
+*.exe
+*.dll
+*.so
+*.dylib
+honeywatch-server-*
+honeywatch-agent-*
+
+# Built assets
+web/dist/
+web/node_modules/
+
+# Data (runtime)
+data/
+*.db
+*.db-journal
+
+# Logs (runtime)
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+build_agent.log
+releases/
+*.zip
+*.tar.gz
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Go
+vendor/
+go.sum
+agent/go.sum
+
+# Node
+web/dist/
+web/node_modules/
+web/.turbo/
+web/.vite/
+
+# Misc
+*.log
+tmp/
+temp/

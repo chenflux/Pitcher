@@ -24,6 +24,16 @@ const (
 	BuildDate = "20260513"
 )
 
+func findAgentFile(fn string) string {
+	for _, dir := range []string{"dist", "bin"} {
+		fp := filepath.Join(dir, fn)
+		if _, err := os.Stat(fp); err == nil {
+			return fp
+		}
+	}
+	return ""
+}
+
 func main() {
 	rootDir := findRootDir()
 	os.Chdir(rootDir)
@@ -138,7 +148,11 @@ func buildMgmtRouter(
 	}).Methods("GET")
 
 	api.HandleFunc("/downloads/agents", func(w http.ResponseWriter, r *http.Request) {
-		exes, _ := filepath.Glob("bin/honeywatch-agent-" + Version + "-*")
+		pattern := "dist/honeywatch-agent-" + Version + "-*"
+		exes, _ := filepath.Glob(pattern)
+		if len(exes) == 0 {
+			exes, _ = filepath.Glob("bin/honeywatch-agent-" + Version + "-*")
+		}
 		type entry struct {
 			Filename string `json:"filename"`
 			OS       string `json:"os"`
@@ -166,8 +180,8 @@ func buildMgmtRouter(
 
 	api.HandleFunc("/downloads/agent/{filename}", func(w http.ResponseWriter, r *http.Request) {
 		fn := mux.Vars(r)["filename"]
-		fp := filepath.Join("bin", fn)
-		if _, err := os.Stat(fp); err != nil {
+		fp := findAgentFile(fn)
+		if fp == "" {
 			http.NotFound(w, r)
 			return
 		}
@@ -247,8 +261,8 @@ func buildDataRouter(
 
 	data.HandleFunc("/agents/download/{filename}", func(w http.ResponseWriter, r *http.Request) {
 		fn := mux.Vars(r)["filename"]
-		fp := filepath.Join("bin", fn)
-		if _, err := os.Stat(fp); err != nil {
+		fp := findAgentFile(fn)
+		if fp == "" {
 			http.NotFound(w, r)
 			return
 		}

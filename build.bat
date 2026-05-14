@@ -11,7 +11,6 @@ if not exist VERSION (
 )
 
 set /p VERSION= < VERSION
-set VERSION=!VERSION:~0,-1!
 if "!VERSION!"=="" (
     echo ERROR: VERSION file is empty
     exit /b 1

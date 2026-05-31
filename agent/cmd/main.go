@@ -77,7 +77,8 @@ var (
 	activeSvcs  map[uint]*serviceRef
 	activeMu    sync.RWMutex
 	ruleCache   []cachedRuleGroup
-	ruleMu      sync.RWMutex
+	ruleCacheMu sync.RWMutex
+	ruleCacheVersion string
 	configCache map[uint]AgentConfigTemplate
 	configMu    sync.RWMutex
 )
@@ -494,6 +495,12 @@ func fetchRules() {
 	}
 
 	groups := make([]cachedRuleGroup, 0, len(result.Groups))
+	newVersion := fmt.Sprintf("%v", result.Groups)
+	if newVersion == ruleCacheVersion {
+		log.Printf("Rules unchanged, skipping recompile")
+		return
+	}
+
 	for _, g := range result.Groups {
 		cg := cachedRuleGroup{Protocol: g.Protocol}
 		for _, r := range g.Rules {
@@ -513,15 +520,16 @@ func fetchRules() {
 		}
 	}
 
-	ruleMu.Lock()
+	ruleCacheMu.Lock()
 	ruleCache = groups
-	ruleMu.Unlock()
+	ruleCacheVersion = newVersion
+	ruleCacheMu.Unlock()
 	log.Printf("Loaded %d rule groups", len(groups))
 }
 
 func evaluateRules(protocol, method, path, query, userAgent, body string) (bool, string) {
-	ruleMu.RLock()
-	defer ruleMu.RUnlock()
+	ruleCacheMu.RLock()
+	defer ruleCacheMu.RUnlock()
 
 	for _, g := range ruleCache {
 		if g.Protocol != protocol && g.Protocol != "http" {

@@ -18,8 +18,10 @@ func NewAuthService() *AuthService {
 }
 
 type LoginRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username  string `json:"username"`
+	Password  string `json:"password"`
+	Captcha   string `json:"captcha"`
+	CaptchaID string `json:"captcha_id"`
 }
 
 type LoginResponse struct {
@@ -61,8 +63,19 @@ func (s *AuthService) ChangePassword(userID uint, oldPassword, newPassword strin
 		return errors.New("current password is incorrect")
 	}
 
-	if len(newPassword) < 6 {
-		return errors.New("new password must be at least 6 characters")
+	if len(newPassword) < 8 {
+		return errors.New("new password must be at least 8 characters")
+	}
+	var hasUpper, hasLower, hasDigit bool
+	for _, c := range newPassword {
+		switch {
+		case c >= 'A' && c <= 'Z': hasUpper = true
+		case c >= 'a' && c <= 'z': hasLower = true
+		case c >= '0' && c <= '9': hasDigit = true
+		}
+	}
+	if !hasUpper || !hasLower || !hasDigit {
+		return errors.New("password must contain uppercase, lowercase and digits")
 	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)

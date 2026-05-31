@@ -210,6 +210,16 @@ func (s *SecurityService) RecordLoginAttempt(clientIP string, success bool) (cap
 	return captchaRequired, remainingAttempts, 0, 0
 }
 
+func (s *SecurityService) IsCaptchaRequired(clientIP string) bool {
+	loginMu.RLock()
+	defer loginMu.RUnlock()
+
+	if attempt, exists := loginAttempts[clientIP]; exists {
+		return attempt.CaptchaRequired && time.Since(attempt.FirstAttempt) <= WindowMinutes*time.Minute
+	}
+	return false
+}
+
 func (s *SecurityService) GetClientIP(r *http.Request) string {
 	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
 		parts := strings.Split(xff, ",")

@@ -47,6 +47,24 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	if req.Captcha != "" && req.CaptchaID != "" {
+		if !h.securityService.VerifyCaptcha(req.CaptchaID, req.Captcha, clientIP) {
+			writeJSON(w, http.StatusBadRequest, map[string]interface{}{
+				"success":          false,
+				"error":            "invalid captcha",
+				"captcha_required": true,
+			})
+			return
+		}
+	} else if h.securityService.IsCaptchaRequired(clientIP) {
+		writeJSON(w, http.StatusBadRequest, map[string]interface{}{
+			"success":          false,
+			"error":            "captcha required",
+			"captcha_required": true,
+		})
+		return
+	}
+
 	resp, err := h.authService.Login(req)
 	if err != nil {
 		captchaRequired, remainingAttempts, lockedUntil, graylistTTL := h.securityService.RecordLoginAttempt(clientIP, false)

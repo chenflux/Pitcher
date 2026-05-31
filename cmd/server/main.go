@@ -1,13 +1,16 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/chenflux/pitcher/internal/config"
@@ -82,23 +85,44 @@ func main() {
 	fmt.Printf("[4/4] Manage API: %s | Data API: %s\n", mgmtAddr, dataAddr)
 	fmt.Println("============================================================")
 
-	go func() {
-		srv := &http.Server{
-			Handler:      dataRouter,
-			Addr:         dataAddr,
-			WriteTimeout: 15 * time.Second,
-			ReadTimeout:  15 * time.Second,
-		}
-		log.Fatal(srv.ListenAndServe())
-	}()
-
-	srv := &http.Server{
+	mgmtSrv := &http.Server{
 		Handler:      mgmtRouter,
 		Addr:         mgmtAddr,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
-	log.Fatal(srv.ListenAndServe())
+	dataSrv := &http.Server{
+		Handler:      dataRouter,
+		Addr:         dataAddr,
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+
+	shutdownCh := make(chan os.Signal, 1)
+	signal.Notify(shutdownCh, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		if err := dataSrv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Printf("Data plane error: %v", err)
+		}
+	}()
+
+	go func() {
+		if err := mgmtSrv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Printf("Manage plane error: %v", err)
+		}
+	}()
+
+	<-shutdownCh
+	fmt.Println("\nShutting down...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	mgmtSrv.Shutdown(ctx)
+	dataSrv.Shutdown(ctx)
+	database.Close()
+	fmt.Println("Server stopped")
 }
 
 func buildMgmtRouter(
@@ -144,9 +168,8 @@ func buildMgmtRouter(
 
 	api.HandleFunc("/version", func(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(map[string]string{
-			"version":     Version,
-			"build_date":  BuildDate,
-			"agent_token": cfg.Agent.Token,
+			"version":    Version,
+			"build_date": BuildDate,
 		})
 	}).Methods("GET")
 
